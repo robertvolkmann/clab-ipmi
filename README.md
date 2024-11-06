@@ -2,7 +2,9 @@
 
 OpenIPMI: https://github.com/cminyard/openipmi
 
-Build images:
+![Topology](topology.png)
+
+Build image:
 ```bash
 docker build -t localhost/machine image
 ```
@@ -12,7 +14,7 @@ Show BMC info:
 docker exec -it clab-ipmi-machine ipmitool -I lanplus -U ipmiusr -P test -p 9001 -H 127.0.0.1 mc info
 ```
 
-Show channel informations:
+Show channel information:
 ```bash
 docker exec -it clab-ipmi-machine ipmitool -I lanplus -U ipmiusr -P test -p 9001 -H 127.0.0.1 lan print 1
 ```
