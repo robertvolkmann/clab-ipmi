@@ -3,8 +3,12 @@ FROM docker.io/library/debian:bookworm-slim
 RUN apt-get update && \
     apt-get --no-install-recommends install --yes \
         cloud-image-utils \
+        dhcpcd-base \
+        ipmitool \
         iproute2 \
+        openipmi \
         ovmf \
+        procps \
         python3 \
         python3-yaml \
         qemu-utils \
@@ -16,8 +20,6 @@ ARG UBUNTU_IMG_URL="https://cloud-images.ubuntu.com/$UBUNTU_VERSION/current/$UBU
 
 ADD "${UBUNTU_IMG_URL}" /ubuntu.img
 
-RUN qemu-img resize /ubuntu.img 50G
+COPY . /
 
-ENTRYPOINT ["/launch.py"]
-
-COPY mirror_tap_to_eth.sh remove_mirror.sh launch.py /
+ENTRYPOINT ["/entrypoint.sh"]

@@ -2,15 +2,16 @@ name: ipmi
 
 topology:
   nodes:
-    openipmi:
+    machine:
       kind: linux
-      image: localhost/openipmi
-    ubuntu:
-      kind: generic_vm
-      image: localhost/ubuntu
-      network-mode: container:openipmi
-#      stages:
-#        create:
-#          wait-for:
-#            - node: openipmi
-#              stage: healthy
+      image: localhost/machine
+    kea-dhcp4:
+      kind: linux
+      image: docker.cloudsmith.io/isc/docker/kea-dhcp4:2.6.0
+      binds:
+        - kea.json:/etc/kea/kea-dhcp4.conf
+      network-mode: none
+      exec:
+        - ip addr add 10.0.1.1/24 dev eth0
+  links:
+    - endpoints: ["machine:lan0", "kea-dhcp4:eth0"]

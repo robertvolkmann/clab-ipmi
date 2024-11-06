@@ -46,7 +46,7 @@ class Qemu:
                 'name': 'ansible',
                 'groups': ['sudo'],
                 'lock_passwd': False,
-                'passwd': '$6$FK09vnVRTO.BxLwN$.RuqxV8BmY.J8r6qrXtn7WCr6WL0TD1M7wELEWQun8v1fEHIEMIpz0GzL8f2pMZkftklF1aecgLZ0UWVmww9m.',
+                'passwd': '$6$FK09vnVRTO.BxLwN$.RuqxV8BmY.J8r6qrXtn7WCr6WL0TD1M7wELEWQun8v1fEHIEMIpz0GzL8f2pMZkftklF1aecgLZ0UWVmww9m.', # password
                 'shell': '/bin/bash',
                 'sudo': ['ALL=(ALL) NOPASSWD:ALL'],
             }],
@@ -122,9 +122,9 @@ class Qemu:
             with open(f'/sys/class/net/eth{i}/address', 'r') as f:
                 mac = f.read().strip()
             cmd.append('-device')
-            cmd.append(f'virtio-net-pci,netdev=hn{i},mac={mac},romfile=""')
+            cmd.append(f'virtio-net-pci,netdev=hn{i},mac={mac}')
             cmd.append(f'-netdev')
-            cmd.append(f'tap,id=hn{i},ifname=tap{i},script=/mirror_tap_to_eth.sh,downscript=remove_mirror.sh')
+            cmd.append(f'tap,id=hn{i},ifname=tap{i},script=/machine/mirror_tap_to_eth.sh,downscript=/machine/remove_mirror.sh')
 
         self._p = subprocess.Popen(cmd)
 
@@ -142,7 +142,7 @@ def main():
     name = os.getenv('CLAB_LABEL_CLAB_NODE_NAME', default='switch')
     smp = os.getenv('QEMU_SMP', default='4')
     memory = os.getenv('QEMU_MEMORY', default='8192')
-    interfaces = int(os.getenv('CLAB_INTFS', 0)) + 1  # containerlab doesn't include eth0
+    interfaces = int(os.getenv('CLAB_INTFS', 0))
 
     vm = Qemu(name, smp, memory, interfaces)
 
@@ -151,9 +151,6 @@ def main():
 
     logger.info('Create cloud-init configuration')
     vm.create_cloud_init_configuration()
-
-    logger.info(f'Waiting for {interfaces} interfaces to be connected')
-    wait_until_interfaces_are_connected(interfaces)
 
     logger.info('Start QEMU')
     vm.start()
@@ -164,17 +161,6 @@ def main():
 
 def handle_exit(signal, frame):
     sys.exit(0)
-
-
-def wait_until_interfaces_are_connected(interfaces: int) -> None:
-    while True:
-        i = 0
-        for iface in os.listdir('/sys/class/net/'):
-            if iface.startswith('eth'):
-                i += 1
-        if i == interfaces:
-            break
-        time.sleep(1)
 
 
 def get_ip_address(iface: str) -> str:

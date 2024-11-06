@@ -1,0 +1,40 @@
+{
+  "Dhcp4": {
+    "interfaces-config": {
+      "interfaces": [
+        "eth0"
+      ]
+    },
+    "lease-database": {
+      "type": "memfile"
+    },
+    "subnet4": [
+      {
+        "id": 1,
+        "subnet": "10.0.1.0/24",
+        "pools": [
+          {
+            "pool": "10.0.1.2 - 10.0.1.254"
+          }
+        ],
+        "option-data": [
+          {
+            "name": "routers",
+            "data": "10.0.1.1"
+          }
+        ]
+      }
+    ],
+    "loggers": [
+      {
+        "name": "kea-dhcp4",
+        "output_options": [
+          {
+            "output": "stdout"
+          }
+        ],
+        "severity": "DEBUG"
+      }
+    ]
+  }
+}
