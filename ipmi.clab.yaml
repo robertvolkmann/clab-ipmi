@@ -1,0 +1,16 @@
+name: ipmi
+
+topology:
+  nodes:
+    openipmi:
+      kind: linux
+      image: localhost/openipmi
+    ubuntu:
+      kind: generic_vm
+      image: localhost/ubuntu
+      network-mode: container:openipmi
+#      stages:
+#        create:
+#          wait-for:
+#            - node: openipmi
+#              stage: healthy
