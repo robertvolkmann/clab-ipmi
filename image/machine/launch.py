@@ -115,7 +115,7 @@ class Qemu:
             '-chardev', 'socket,id=ipmi0,host=127.0.0.1,port=9002,reconnect=10',
             '-device', 'ipmi-bmc-extern,id=bmc0,chardev=ipmi0',
             '-device', 'isa-ipmi-kcs,bmc=bmc0,irq=5',
-            '-serial', 'telnet:127.0.0.1:5000,server,nowait',
+            '-serial', 'telnet:127.0.0.1:9003,server,nowait',
         ]
 
         for i in range(self._interfaces):
