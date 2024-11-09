@@ -80,7 +80,7 @@ def get_ip_address(iface: str) -> str:
     return socket.inet_ntoa(fcntl.ioctl(
         s.fileno(),
         0x8915,  # SIOCGIFADDR
-        struct.pack('256s', iface.encode('utf_8'))
+        struct.pack("256s", iface.encode("utf8"))
     )[20:24])
 
 
@@ -89,9 +89,9 @@ def get_mac_address(iface: str) -> str:
     mac = fcntl.ioctl(
         s.fileno(),
         0x8927,  # SIOCGIFHWADDR
-        struct.pack('256s', iface.encode('utf-8'))
+        struct.pack("256s", iface.encode("utf8"))
     )[18:24]
-    return ':'.join('%02x' % b for b in mac)
+    return ":".join("%02x" % b for b in mac)
 
 
 def get_subnet_mask(iface):
@@ -99,7 +99,7 @@ def get_subnet_mask(iface):
     netmask = fcntl.ioctl(
         s.fileno(),
         0x891b,  # SIOCGIFNETMASK
-        struct.pack('256s', iface.encode('utf_8'))
+        struct.pack("256s", iface.encode("utf8"))
     )[20:24]
     return socket.inet_ntoa(netmask)
 
@@ -108,14 +108,14 @@ def get_default_gateway_ip_address() -> str:
     with open("/proc/net/route") as fh:
         for line in fh:
             fields = line.strip().split()
-            if fields[1] != '00000000' or not int(fields[3], 16) & 2:
+            if fields[1] != "00000000" or not int(fields[3], 16) & 2:
                 # If not default route or not RTF_GATEWAY, skip it
                 continue
             return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
 
 
 def get_default_gateway_mac_address(gateway_ip: str):
-    with open('/proc/net/arp', 'r') as f:
+    with open("/proc/net/arp", "r") as f:
         for line in f.readlines()[1:]:
             fields = line.split()
             if fields[0] == gateway_ip:
