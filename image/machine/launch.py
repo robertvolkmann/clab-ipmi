@@ -111,7 +111,8 @@ class Qemu:
             '-cdrom', self._iso,
             '-drive', 'if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd',
             '-drive', 'if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS.fd',
-            '-drive', f'if=virtio,format=qcow2,file={self._disk}',
+            '-drive', f'id=disk,if=none,format=qcow2,file={self._disk}',
+            '-device', f'virtio-blk-pci,drive=disk,bootindex=0',
             '-chardev', 'socket,id=ipmi0,host=127.0.0.1,port=9002,reconnect=10',
             '-device', 'ipmi-bmc-extern,id=bmc0,chardev=ipmi0',
             '-device', 'pci-ipmi-kcs,bmc=bmc0,irq=5',
@@ -122,7 +123,7 @@ class Qemu:
             with open(f'/sys/class/net/eth{i}/address', 'r') as f:
                 mac = f.read().strip()
             cmd.append('-device')
-            cmd.append(f'virtio-net-pci,netdev=hn{i},mac={mac}')
+            cmd.append(f'virtio-net-pci,netdev=hn{i},mac={mac},romfile=,bootindex={i+1}')
             cmd.append(f'-netdev')
             cmd.append(f'tap,id=hn{i},ifname=tap{i},script=/machine/mirror_tap_to_eth.sh,downscript=/machine/remove_mirror.sh')
 
