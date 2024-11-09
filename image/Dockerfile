@@ -1,4 +1,4 @@
-FROM docker.io/library/debian:bookworm-slim
+FROM docker.io/library/debian:bookworm-backports
 
 RUN apt-get update && \
     apt-get --no-install-recommends install --yes \
