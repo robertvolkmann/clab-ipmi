@@ -15,6 +15,6 @@ while [ "$(count_interfaces)" -lt "$INTFS" ]; do
     sleep 1
 done
 
-dhcpcd --oneshot --noipv4ll --waitip lan0
+dhcpcd --ipv4only --oneshot --noipv4ll --timeout=0 --waitip lan0
 
 exec /usr/bin/ipmi_sim -c /openipmi/lan.conf -f /openipmi/ipmisim1.emu
