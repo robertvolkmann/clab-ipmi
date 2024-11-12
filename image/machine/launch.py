@@ -114,7 +114,7 @@ class Qemu:
             "-device", f"virtio-blk-pci,drive=disk,bootindex=0",
             "-chardev", "socket,id=ipmi0,host=127.0.0.1,port=9002,reconnect=10",
             "-device", "ipmi-bmc-extern,id=bmc0,chardev=ipmi0",
-            "-device", "pci-ipmi-kcs,bmc=bmc0,irq=5",
+            "-device", "pci-ipmi-kcs,bmc=bmc0",
             "-serial", "telnet:127.0.0.1:9003,server,nowait",
         ]
 
